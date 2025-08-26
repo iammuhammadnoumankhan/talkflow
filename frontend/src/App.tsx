@@ -1,8 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Send, Bot, User, Plus, Trash2, MessageCircle, Zap, Settings, Moon, Sun } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import rehypeRaw from 'rehype-raw';
+import rehypeHighlight from 'rehype-highlight';
+import 'highlight.js/styles/github.css';
 
-// const API_BASE_URL = 'http://localhost:8000';
-// const API_BASE_URL = 'http://backend:8000';
+// const API_BASE_URL = 'http://localhost:8070/api';
 const API_BASE_URL = "/api";
 
 
@@ -306,7 +310,7 @@ const OllamaChat: React.FC = () => {
           <div className="p-6 border-b border-gray-200 dark:border-gray-700">
             <div className="flex items-center justify-between mb-4">
               <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                Ollama Chat
+                TalkFlow
               </h1>
               <div className="flex gap-2">
                 <button
@@ -474,8 +478,13 @@ const OllamaChat: React.FC = () => {
                         ? 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800'
                         : 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-700'
                     }`}>
-                      <div className="whitespace-pre-wrap break-words">
-                        {message.content}
+                      <div className="break-words">
+                        <ReactMarkdown
+                          remarkPlugins={[remarkGfm]}
+                          rehypePlugins={[rehypeRaw, rehypeHighlight]}
+                        >
+                          {message.content}
+                        </ReactMarkdown>
                       </div>
                     </div>
                     <div className={`text-xs text-gray-500 dark:text-gray-400 mt-2 ${

@@ -4,7 +4,7 @@ metadata:
   name: talkflow-ingress
 spec:
   rules:
-    - host: b1e7d5e2502b.ngrok-free.app
+    - host: e523be3986f1.ngrok-free.app  #change it with your url to host on, it can be localhost
       http:
         paths:
           # Backend API (must be FIRST so it has precedence)

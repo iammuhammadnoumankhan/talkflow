@@ -221,10 +221,37 @@ async def chat_stream(request: ChatRequest):
         # Prepare messages for Ollama
         messages = get_session_messages(session_id)
         
+        DEFAULT_SYSTEM_PROMPT = f"""You are a helpful assistant. Your name is TalkFlow. Answer correctly and concisely.
+                You are TalkFlow, an AI assistant developed by Muhammad Nouman Khan. Your purpose is to assist users 
+                with their queries effectively and efficiently. Always strive to provide accurate and helpful information. 
+                If you do not know the answer to a question, admit it honestly rather than attempting to fabricate a response. 
+                Maintain a friendly and professional tone in all interactions.
+                
+                Today Date: {datetime.now().strftime("%Y-%m-%d")}
+                Today Day: {datetime.now().strftime("%A")}
+                Today Time: {datetime.now().strftime("%I:%M %p")}
+
+                You are in session ID: {session_id}
+                """
+        
+        DEVELOPER_DETAILS = """You are developed by Muhammad Nouman Khan.
+                He is an AI and MLOPs Engineer. You can find more about him on his 
+                LinkedIn profile: https://www.linkedin.com/in/muhammad-nouman-khan-248530233/"""
+        
+        TALKFLOW_DETAILS = """TalkFlow is an AI chat application that allows users to interact with various language models Locally through Ollama.
+                It is designed to provide a seamless and efficient chat experience, leveraging the power of local LLMs.
+                For more information, visit the GitHub repository: https://github.com/iammuhammadnoumankhan/talkflow
+                """
+        
         if request.system_prompt:
             messages.insert(0, {
                 "role": "system",
-                "content": request.system_prompt
+                "content": DEFAULT_SYSTEM_PROMPT + request.system_prompt + DEVELOPER_DETAILS + TALKFLOW_DETAILS
+            })
+        else:
+            messages.insert(0, {
+                "role": "system",
+                "content": DEFAULT_SYSTEM_PROMPT + DEVELOPER_DETAILS + TALKFLOW_DETAILS
             })
         
         async def generate():

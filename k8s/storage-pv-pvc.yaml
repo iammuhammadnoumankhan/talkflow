@@ -1,0 +1,36 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: ollama-storage
+provisioner: rancher.io/local-path  # For KIND clusters
+# provisioner: kubernetes.io/host-path  # Alternative fallback
+volumeBindingMode: WaitForFirstConsumer  # Better for KIND
+# volumeBindingMode: WaitForFirstConsumer  # Better for KIND
+reclaimPolicy: Retain
+allowVolumeExpansion: true
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: ollama-pv
+spec:
+  capacity:
+    storage: 15Gi
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ollama-storage  # References the StorageClass above
+  hostPath:   # Minikube will use hostPath for local storage
+    path: /data/ollama
+  persistentVolumeReclaimPolicy: Retain
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ollama-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ollama-storage  # References the StorageClass above
+  resources:
+    requests:
+      storage: 10Gi
